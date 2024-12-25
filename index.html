@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merry Christmas</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #ff6a00, #ff0000);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin: 0;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        p {
+            font-size: 1.5rem;
+            margin: 10px 0;
+        }
+
+        .snowflake {
+            position: absolute;
+            top: -10%;
+            animation: fall 10s linear infinite;
+            font-size: 1.5rem;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10%) rotate(0deg);
+            }
+            100% {
+                transform: translateY(110%) rotate(360deg);
+            }
+        }
+
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Merry Christmas! 🎄</h1>
+        <p>Wishing you joy, peace, and happiness this holiday season!</p>
+        <div class="snowflakes">
+            <span class="snowflake" style="left: 10%; animation-delay: 0s;">❄️</span>
+            <span class="snowflake" style="left: 20%; animation-delay: 2s;">❅</span>
+            <span class="snowflake" style="left: 30%; animation-delay: 4s;">❆</span>
+            <span class="snowflake" style="left: 40%; animation-delay: 6s;">❄️</span>
+            <span class="snowflake" style="left: 50%; animation-delay: 8s;">❅</span>
+            <span class="snowflake" style="left: 60%; animation-delay: 10s;">❆</span>
+            <span class="snowflake" style="left: 70%; animation-delay: 12s;">❄️</span>
+            <span class="snowflake" style="left: 80%; animation-delay: 14s;">❅</span>
+            <span class="snowflake" style="left: 90%; animation-delay: 16s;">❆</span>
+        </div>
+    </div>
+</body>
+</html>
