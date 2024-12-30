@@ -1,0 +1,62 @@
+---
+- name: Установка Jenkins на Ubuntu сервере
+  hosts: ec2
+  become: yes  # Выполняем задачи с правами суперпользователя
+
+  tasks:
+    - name: Обновление и апгрейд системы
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Установить необходимые зависимости (Java и другие)
+      apt:
+        name:
+          - openjdk-11-jdk
+          - curl
+          - gnupg
+          - ca-certificates
+        state: present
+
+    - name: Добавить GPG ключ Jenkins
+      shell: |
+        curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io.key | gpg --dearmor -o /usr/share/keyrings/jenkins-keyring.gpg
+      args:
+        executable: /bin/bash
+
+
+    - name: Добавить репозиторий Jenkins
+      apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/jenkins-keyring.gpg] https://pkg.jenkins.io/debian-stable binary/"
+        state: present
+
+
+    - name: Установить Jenkins
+      apt:
+        name: jenkins
+        state: present
+
+    - name: Убедиться, что Jenkins запущен и добавлен в автозагрузку
+      service:
+        name: jenkins
+        state: started
+        enabled: yes
+
+    - name: Проверить доступность Jenkins
+      uri:
+        url: http://localhost:8080
+        return_content: yes
+      register: result
+
+    - name: Вывести информацию о доступности Jenkins
+      debug:
+        msg: "Jenkins установлен и доступен по адресу: http://{{ ansible_host }}:8080"
+
+    - name: Получить временный пароль для Jenkins
+      shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+      register: jenkins_password
+
+    - name: Вывести временный пароль
+      debug:
+        msg: "Временный пароль для Jenkins: {{ jenkins_password.stdout }}"
+
