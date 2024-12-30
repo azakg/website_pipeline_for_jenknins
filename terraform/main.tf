@@ -14,7 +14,7 @@ resource "aws_instance" "Website_Server2" {
 }
 
 resource "aws_instance" "Jenkins_Terraform" {
-    ami = "ami-0e2c8caa4b6378d8c"
+    ami = "ami-0c7217cdde317cfec"
     instance_type = "c7a.medium"
     availability_zone = "us-east-1a"
     key_name = "docker_test"
