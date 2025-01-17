@@ -1,0 +1,65 @@
+---
+- name: Установка Jenkins на Ubuntu сервере (на основе оф. инструкции)
+  hosts: ec2
+  become: yes
+
+  tasks:
+    - name: Обновление и апгрейд системы
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Установить необходимые зависимости (Java и другие)
+      apt:
+        name:
+          - openjdk-11-jdk
+          - curl
+          - gnupg       # Вдруг понадобятся другие операции с ключами
+          - ca-certificates
+        state: present
+
+    - name: Скачать ASCII-ключ Jenkins
+      get_url:
+        url: https://pkg.jenkins.io/debian/jenkins.io-2023.key
+        dest: /usr/share/keyrings/jenkins-keyring.asc
+        mode: '0644'
+
+    - name: Добавить репозиторий Jenkins
+      apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian binary/"
+        state: present
+        update_cache: yes  # Сразу обновить пакетный кеш
+
+    - name: Установить Jenkins
+      apt:
+        name: jenkins
+        state: present
+
+    - name: Убедиться, что Jenkins запущен и добавлен в автозагрузку
+      service:
+        name: jenkins
+        state: started
+        enabled: yes
+
+    - name: Проверить доступность Jenkins
+      uri:
+        url: http://localhost:8080
+        return_content: yes
+        # Разрешаем коды 200 и 403 (и, возможно, 302 редирект)
+        status_code:
+          - 200
+          - 302
+          - 403
+      register: result
+
+    - name: Вывести информацию о доступности Jenkins
+      debug:
+        msg: "Jenkins установлен и доступен по адресу: http://{{ ansible_host }}:8080"
+
+    - name: Получить временный пароль для Jenkins
+      shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+      register: jenkins_password
+
+    - name: Вывести временный пароль
+      debug:
+        msg: "Временный пароль для Jenkins: {{ jenkins_password.stdout }}"
